@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Berkhamsted Handicap Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1272b3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+  .container {
+            max-width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            display: none;
+        }
+        #courseHandicap {
+            font-size: 24px;
+            text-align: center;    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Berkhamsted Golf Club Playing Handicap Calculator</h1>
+        <form id="handicapForm">
+            <div id="singleOptions">
+                <label for="gender">Gender:</label>
+                <select id="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                
+                <label for="handicapIndex">Handicap Index:</label>
+                <input type="number" id="handicapIndex" step="0.1" required>
+                
+                <label for="tee">Selected Tee:</label>
+                <select id="tee" required>
+                    <option value="white">White Tee</option>
+                    <option value="yellow">Yellow Tee</option>
+                    <option value="red">Red Tee</option>
+                    <option value="blue">Blue Tee</option>                
+                    <option value="black">Black Tee</option>
+                </select>
+                
+                <label for="playAdjustment">Play Adjustment:</label>
+                <select id="playAdjustment" required>
+                  <option value="Full100">Full Handicap</option>
+                    <option value="individual95">Individual 95%</option>
+                    <option value="individualStableford95">Individual Stableford 95%</option>
+                    <option value="individualParBogey95">Individual Par/Bogey 95%</option>
+                    <option value="individualMaxScore95">Individual Maximum Score 95%</option>
+                    <option value="fourBall85">Four-Ball 85%</option>
+                    <option value="fourBallStableford85">Four-Ball Stableford 85%</option>
+                    <option value="fourBallParBogey90">Four-Ball Par/Bogey 90%</option>
+                </select>
+            </div>
+            
+            <button type="submit">Calculate</button>
+        </form>
+        
+        <div id="result">
+            <h2>Calculated Playing Handicap:</h2>
+            <p id="courseHandicap"></p>
+        </div>
+    </div>
+    
+    <script>
+        const slopeRatings = {
+            male: {
+                red: 116,
+                blue: 111,
+                yellow: 124,
+                white: 132,
+                black: 135
+            },
+            female: {
+                red: 134,
+                blue: 119,
+                yellow: 144
+            }
+        };
+
+        const playAdjustments = {
+          Full100: 1,
+            individual95: 0.95,
+            individualStableford95: 0.95,
+            individualParBogey95: 0.95,
+            individualMaxScore95: 0.95,
+            fourBall85: 0.85,
+            fourBallStableford85: 0.85,
+            fourBallParBogey90: 0.90
+        };
+
+        const genderSelect = document.getElementById('gender');
+        const teeSelect = document.getElementById('tee');
+        const slopeValue = document.getElementById('slopeValue');
+        const playAdjustmentSelect = document.getElementById('playAdjustment');
+
+        genderSelect.addEventListener('change', updateSlopeRating);
+        teeSelect.addEventListener('change', updateSlopeRating);
+
+        function updateSlopeRating() {
+            const selectedGender = genderSelect.value;
+            const selectedTee = teeSelect.value;
+            const selectedSlopeRating = slopeRatings[selectedGender][selectedTee];
+
+            slopeValue.textContent = selectedSlopeRating;
+        }
+
+        document.getElementById('handicapForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const gender = genderSelect.value;
+            const handicapIndex = parseFloat(document.getElementById('handicapIndex').value);
+            const tee = teeSelect.value;
+            const slopeRating = slopeRatings[gender][tee];
+            const playAdjustment = playAdjustments[playAdjustmentSelect.value];
+
+            const courseHandicap = calculateCourseHandicap(handicapIndex, tee, slopeRating, gender);
+            const adjustedCourseHandicap = applyPlayAdjustment(courseHandicap, playAdjustment);
+
+            document.getElementById('courseHandicap').textContent = adjustedCourseHandicap;
+            document.getElementById('result').style.display = 'block';
+        });
+
+        function calculateCourseHandicap(handicapIndex, tee, slopeRating, gender) {
+            let courseRating, par;
+
+            if (tee === 'red') {
+                courseRating = gender === 'male' ? 69.1 : 73.8;
+                par = 73;
+            } else if (tee === 'blue') {
+                courseRating = gender === 'male' ? 65.5 : 70.2;
+                par = 73;
+            } else if (tee === 'yellow') {
+                courseRating = gender === 'male' ? 70.2 : 76.2;
+                par = 71;
+            } else if (tee === 'white') {
+                courseRating = gender === 'male' ? 72.3 : 72.3;
+                par = 71;
+            } else if (tee === 'black') {
+                courseRating = gender === 'male' ? 72.8 : 72.8;
+                par = 71;
+            }
+
+            const courseHandicap = ((handicapIndex * slopeRating) / 113);
+
+            return Math.round(courseHandicap);
+        }
+
+        function applyPlayAdjustment(courseHandicap, playAdjustment) {
+            return Math.round(courseHandicap * playAdjustment);
+        }
+
+        // Initial slope rating update
+        updateSlopeRating();
+    </script>
+</body>
+</html>
