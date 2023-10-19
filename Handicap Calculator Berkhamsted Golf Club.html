@@ -138,8 +138,8 @@
             <label for="Colour">Select Tee:</label>
             <div class="styled-select">
                 <select id="Colour">
+                         <option value="Yellow">Yellow</option>
                     <option value="White">White</option>
-                    <option value="Yellow">Yellow</option>
                     <option value="Red">Red</option>
                     <option value="Blue">Blue</option>
                     <option value="Black">Black</option>
@@ -164,21 +164,36 @@
         <p id="result"></p>
     </div>
 <script>
-    const maleButton = document.getElementById("maleButton");
-    const femaleButton = document.getElementById("femaleButton");
-    const course18holesButton = document.getElementById("course18holesButton");
-    const front9Button = document.getElementById("front9Button");
-    const back9Button = document.getElementById("back9Button");
+const maleButton = document.getElementById("maleButton");
+const femaleButton = document.getElementById("femaleButton");
+const course18holesButton = document.getElementById("course18holesButton");
+const front9Button = document.getElementById("front9Button");
+const back9Button = document.getElementById("back9Button");
+const colourSelect = document.getElementById("Colour"); // Select element for color
 
-    maleButton.addEventListener("click", () => {
-        maleButton.classList.add("selected");
-        femaleButton.classList.remove("selected");
-    });
+maleButton.addEventListener("click", () => {
+    maleButton.classList.add("selected");
+    femaleButton.classList.remove("selected");
 
-    femaleButton.addEventListener("click", () => {
-        femaleButton.classList.add("selected");
-        maleButton.classList.remove("selected");
-    });
+    // Re-enable all options in the select element
+    for (let option of colourSelect.options) {
+        option.disabled = false;
+    }
+});
+
+femaleButton.addEventListener("click", () => {
+    femaleButton.classList.add("selected");
+    maleButton.classList.remove("selected");
+
+    // Disable "White" and "Black" options in the select element
+    for (let option of colourSelect.options) {
+        if (option.value === "White" || option.value === "Black") {
+            option.disabled = true;
+        } else {
+            option.disabled = false;
+        }
+    }
+});
 
     course18holesButton.addEventListener("click", () => {
         course18holesButton.classList.add("selected");
@@ -342,4 +357,5 @@
 
 </body>
 </html>
+
 
