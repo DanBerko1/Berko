@@ -5,7 +5,7 @@
     <title>Berkhamsted Handicap Calculator</title>
     <style>
         body {
-            background-color: #f0f5f9; /* Light blue-gray background */
+            background-color: #f9fafb;
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
@@ -17,17 +17,19 @@
         }
 
         .container {
-            background-color: #ffffff; /* White container background */
+            background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
             max-width: 400px;
+            transition: all 0.3s ease;
         }
 
         h1 {
-            color: #0091ea; /* Blue header text color */
+            color: #007bff;
             font-size: 24px;
             margin-bottom: 20px;
+            transition: color 0.3s ease;
         }
 
         label {
@@ -35,15 +37,17 @@
             text-align: left;
             color: #666;
             margin-top: 10px;
+            transition: color 0.3s ease;
         }
 
-        input {
-            width: 100%;
+        input, select {
+            width: calc(100% - 22px);
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .buttons {
@@ -61,17 +65,19 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .button.selected {
-            background-color: #0077c0; /* Selected button background color */
-            color: #fff; /* Selected button text color */
+            background-color: #007bff;
+            color: #fff;
+            transition: all 0.3s ease;
         }
 
         .styled-select {
             position: relative;
             display: block;
-            width: 100%;
+            width: calc(100% - 22px);
         }
 
         .styled-select select {
@@ -83,6 +89,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .styled-select::before {
@@ -96,25 +103,36 @@
         }
 
         button {
-            width: 100%;
-            background-color: #0091ea; /* Blue button background */
-            color: #fff; /* White button text color */
-            padding: 10px 0; /* Full width button */
+            width: calc(100% - 22px);
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 0;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             margin-top: 20px;
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: #0077c0; /* Darker blue on hover */
+            background-color: #0056b3;
+            transition: all 0.3s ease;
         }
 
         #result {
             margin-top: 20px;
             font-weight: bold;
-            font-size: 20px; /* Larger result text */
+            font-size: 20px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 1.9s ease, transform 0.9s ease;
+        }
+
+        .result-details {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #666;
         }
     </style>
 </head>
@@ -138,7 +156,7 @@
             <label for="Colour">Select Tee:</label>
             <div class="styled-select">
                 <select id="Colour">
-                         <option value="Yellow">Yellow</option>
+                    <option value="Yellow">Yellow</option>
                     <option value="White">White</option>
                     <option value="Red">Red</option>
                     <option value="Blue">Blue</option>
@@ -161,72 +179,72 @@
             </div>
             <button type="button" onclick="calculateHandicap()">Calculate Handicap</button>
         </form>
-        <p id="result"></p>
+        <div id="result"></div>
     </div>
-<script>
-const maleButton = document.getElementById("maleButton");
-const femaleButton = document.getElementById("femaleButton");
-const course18holesButton = document.getElementById("course18holesButton");
-const front9Button = document.getElementById("front9Button");
-const back9Button = document.getElementById("back9Button");
-const colourSelect = document.getElementById("Colour"); // Select element for color
+    <script>
+        const maleButton = document.getElementById("maleButton");
+        const femaleButton = document.getElementById("femaleButton");
+        const course18holesButton = document.getElementById("course18holesButton");
+        const front9Button = document.getElementById("front9Button");
+        const back9Button = document.getElementById("back9Button");
+        const colourSelect = document.getElementById("Colour"); // Select element for color
 
-maleButton.addEventListener("click", () => {
-    maleButton.classList.add("selected");
-    femaleButton.classList.remove("selected");
+        maleButton.addEventListener("click", () => {
+            maleButton.classList.add("selected");
+            femaleButton.classList.remove("selected");
 
-    // Re-enable all options in the select element
-    for (let option of colourSelect.options) {
-        option.disabled = false;
-    }
-});
+            // Re-enable all options in the select element
+            for (let option of colourSelect.options) {
+                option.disabled = false;
+            }
+        });
 
-femaleButton.addEventListener("click", () => {
-    femaleButton.classList.add("selected");
-    maleButton.classList.remove("selected");
+        femaleButton.addEventListener("click", () => {
+            femaleButton.classList.add("selected");
+            maleButton.classList.remove("selected");
 
-    // Disable "White" and "Black" options in the select element
-    for (let option of colourSelect.options) {
-        if (option.value === "White" || option.value === "Black") {
-            option.disabled = true;
-        } else {
-            option.disabled = false;
-        }
-    }
-});
+            // Disable "White" and "Black" options in the select element
+            for (let option of colourSelect.options) {
+                if (option.value === "White" || option.value === "Black") {
+                    option.disabled = true;
+                } else {
+                    option.disabled = false;
+                }
+            }
+        });
 
-    course18holesButton.addEventListener("click", () => {
-        course18holesButton.classList.add("selected");
-        front9Button.classList.remove("selected");
-        back9Button.classList.remove("selected");
-    });
+        course18holesButton.addEventListener("click", () => {
+            course18holesButton.classList.add("selected");
+            front9Button.classList.remove("selected");
+            back9Button.classList.remove("selected");
+        });
 
-    front9Button.addEventListener("click", () => {
-        front9Button.classList.add("selected");
-        course18holesButton.classList.remove("selected");
-        back9Button.classList.remove("selected");
-    });
+        front9Button.addEventListener("click", () => {
+            front9Button.classList.add("selected");
+            course18holesButton.classList.remove("selected");
+            back9Button.classList.remove("selected");
+        });
 
-    back9Button.addEventListener("click", () => {
-        back9Button.classList.add("selected");
-        course18holesButton.classList.remove("selected");
-        front9Button.classList.remove("selected");
-    });
+        back9Button.addEventListener("click", () => {
+            back9Button.classList.add("selected");
+            course18holesButton.classList.remove("selected");
+            front9Button.classList.remove("selected");
+        });
 
-    function calculateHandicap() {
-        const handicapIndex = parseFloat(document.getElementById("handicapIndex").value);
-        const gender = maleButton.classList.contains("selected") ? "male" : "female";
-        const courseType = course18holesButton.classList.contains("selected")
-            ? "18holes"
-            : front9Button.classList.contains("selected")
-            ? "front9"
-            : "back9";
-        const colour = document.getElementById("Colour").value;
-        const playingAdjustment = parseInt(document.getElementById("playingAdjustment").value) / 100;
+        function calculateHandicap() {
+            const handicapIndex = parseFloat(document.getElementById("handicapIndex").value);
+            const gender = maleButton.classList.contains("selected") ? "male" : "female";
+            const courseType = course18holesButton.classList.contains("selected")
+                ? "18holes"
+                : front9Button.classList.contains("selected")
+                ? "front9"
+                : "back9";
+            const colour = document.getElementById("Colour").value;
+            const playingAdjustment = parseInt(document.getElementById("playingAdjustment").value) / 100;
 
-        let courseRating, slopeRating, par;
+            let courseRating, slopeRating, par;
 
-            if (gender === "male" && courseType === "front9" && colour === "Red") {
+              if (gender === "male" && courseType === "front9" && colour === "Red") {
                 courseRating = 34.7;
                 slopeRating = 116;
                 par = 36;
@@ -335,27 +353,32 @@ femaleButton.addEventListener("click", () => {
               
             }
 
-          let courseHandicap;
+   let courseHandicap;
 
-        if (courseType === "front9" || courseType === "back9") {
-            courseHandicap = Math.round((handicapIndex / 2) * (slopeRating / 113) + (courseRating - par));
-        } else {
-            courseHandicap = Math.round(handicapIndex * (slopeRating / 113));
+            const currentDate = new Date();
+            const aprilFirst2024 = new Date(2024, 3, 1); // April is 3 since months are zero-based
+            if (currentDate < aprilFirst2024 && courseType === "18holes") {
+                courseHandicap = Math.round(handicapIndex * (slopeRating / 113));
+            } else {
+                if (courseType === "front9" || courseType === "back9") {
+                    courseHandicap = Math.round((handicapIndex / 2) * (slopeRating / 113) + (courseRating - par));
+                } else {
+                    courseHandicap = Math.round(handicapIndex * (slopeRating / 113) + (courseRating - par));
+                }
+            }
+
+            const adjustedHandicap = Math.round(courseHandicap * playingAdjustment);
+            const resultElement = document.getElementById("result");
+            resultElement.innerHTML =  `
+                <p>Your playing handicap is: ${adjustedHandicap.toFixed(0)}</p>
+                <div class="result-details">
+                    <p>Handicap Index: ${handicapIndex.toFixed(1)}</p>
+                    <p>Course Handicap: ${courseHandicap}</p>
+                </div>`;
+              resultElement.style.opacity = 1;
+            resultElement.style.transform = "translateY(0)";
+            document.getElementById("handicapIndex").value = "";
         }
-
-        const adjustedHandicap = Math.round(courseHandicap * playingAdjustment);
-        document.getElementById("result").innerHTML = `Your playing handicap is: ${adjustedHandicap.toFixed(0)}`;
-        document.getElementById("handicapIndex").value = "";
-    }
-</script>
-
-
-
-
-
-
-
+    </script>
 </body>
 </html>
-
-
