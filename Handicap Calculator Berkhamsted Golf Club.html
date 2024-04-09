@@ -353,23 +353,17 @@
               
             }
 
-   let courseHandicap;
+            let courseHandicap;
 
-            const currentDate = new Date();
-            const aprilFirst2024 = new Date(2024, 3, 1); // April is 3 since months are zero-based
-            if (currentDate < aprilFirst2024 && courseType === "18holes") {
-                courseHandicap = Math.round(handicapIndex * (slopeRating / 113));
-            } else {
-                if (courseType === "front9" || courseType === "back9") {
-                    courseHandicap = Math.round((handicapIndex / 2) * (slopeRating / 113) + (courseRating - par));
-                } else {
-                    courseHandicap = Math.round(handicapIndex * (slopeRating / 113) + (courseRating - par));
-                }
-            }
+         if (courseType === "front9" || courseType === "back9") {
+            courseHandicap = Math.round((handicapIndex / 2) * (slopeRating / 113) + (courseRating - par));
+        } else {
+            courseHandicap = Math.round(handicapIndex * (slopeRating / 113)+ (courseRating - par));
+        }
 
             const adjustedHandicap = Math.round(courseHandicap * playingAdjustment);
             const resultElement = document.getElementById("result");
-            resultElement.innerHTML =  `
+            resultElement.innerHTML = `
                 <p>Your playing handicap is: ${adjustedHandicap.toFixed(0)}</p>
                 <div class="result-details">
                     <p>Handicap Index: ${handicapIndex.toFixed(1)}</p>
